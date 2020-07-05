@@ -8,5 +8,14 @@ namespace SoccerProbability.Computation
 {
     class GoalsInterval
     {
+
+        public int From { get; private set; }
+        public int To { get; private set; }
+
+        public GoalsInterval(int from, int to)
+        {
+            From = from;
+            To = to;
+        }
     }
 }

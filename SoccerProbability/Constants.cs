@@ -4,10 +4,10 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace SoccerProbability.Computation
+namespace SoccerProbability
 {
-    public class ProbModel
+    static class Constants
     {
-        
+        public const int MinutesPerMatch = 90;
     }
 }

@@ -11,5 +11,22 @@ namespace SoccerProbability.Computation
     /// </summary>
     class InputData
     {
+        /// <summary>
+        /// Минут до конца матча
+        /// </summary>
+        public int MinutesTillEnd
+        {
+            get; private set;
+        }
+
+        /// <summary>
+        /// Забитые на текущий момент голы в порядке их реализации
+        /// </summary>
+        public GoalType[] Goals { get; private set; }
+
+        /// <summary>
+        /// Интервал голов
+        /// </summary>
+        public GoalsInterval Interval { get; private set; }
     }
 }
