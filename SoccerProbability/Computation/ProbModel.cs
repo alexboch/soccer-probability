@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace SoccerProbability.Computation
 {
-    class ProbModel
+    static class ProbModel
     {
 
         /// <summary>
@@ -14,7 +14,7 @@ namespace SoccerProbability.Computation
         /// </summary>
         /// <param name="k"></param>
         /// <returns></returns>
-        private double Fact(int k)
+        private static double Fact(int k)
         {
             double f = 1;
             for (int i = 2; i <= k; i++)
@@ -32,12 +32,17 @@ namespace SoccerProbability.Computation
         /// <param name="mean">Средняя интенсивность</param>
         /// <param name="minutes">Кол-во минут, в течении которых может наступить k событий</param>
         /// <returns></returns>
-        private double Pk(int k, double mean, int minutes)
+        private static double Pk(int k, double mean, int minutes)
         {
-            return minutes * Math.Pow(mean, k) / Fact(k) * Math.Exp(-mean);
+            var l = mean * minutes;
+            var exp = Math.Exp(-l);
+            var lPow = Math.Pow(l, k);
+            var f = Fact(k);
+            
+            return lPow / f * exp;
         }
 
-        public ResultProbs ComputeProbs(InputData input)
+        public static ResultProbs ComputeProbs(InputData input)
         {
             var goalsBefore = input.Goals;
             int minutesLeft = input.MinutesTillEnd;
@@ -47,13 +52,14 @@ namespace SoccerProbability.Computation
             int hostsGoalsBeforeInInterval = 0;
             int guestGoalsBeforeInInterval = 0;
             //Средняя интенсивность потока событий
-            var mean = input.MeanIntensity;
+            var meanHost = input.MeanHost;
+            var meanGuest = input.MeanGuest;
             if (firstGoalIndex < goalsBefore.Length)
             {
 
                 for (int i = firstGoalIndex; i < goalsBefore.Length; i++)
                 {
-                    if (goalsBefore[i] is GoalType.Host)
+                    if (goalsBefore[i] == GoalType.Host)
                     {
                         hostsGoalsBeforeInInterval++;
                     }
@@ -70,15 +76,15 @@ namespace SoccerProbability.Computation
             double guestsWinProb = 0;
             //Вероятность ничьей с закрытием интервала
             double drawProb = 0;
-            for (int k = 0; k < goalsRemain; k++)
+            for (int k = 0; k <= goalsRemain; k++)
             {
                 //Если интервал закрыт, произойдут все голы
                 int k1 = goalsRemain - k;
                 //todo: Оптимизировать вычисление вероятностей
                 //Вероятность, что хозяева забьют k раз
-                var pk = Pk(k, mean, minutesLeft);
+                var pk = Pk(k, meanHost, minutesLeft);
                 //Вероятность, что гости забьют k1 раз
-                var pk1 = Pk(k1, mean, minutesLeft);
+                var pk1 = Pk(k1, meanGuest, minutesLeft);
                 //Вероятность совместного наступления
                 var p = pk * pk1;
                 var hostsTotalGoals = hostsGoalsBeforeInInterval + k;

@@ -29,6 +29,23 @@ namespace SoccerProbability.Computation
         /// </summary>
         public GoalsInterval Interval { get; private set; }
 
-        public double MeanIntensity { get; private set; }
+        /// <summary>
+        /// Средняя интенсивность голов хозяев
+        /// </summary>
+        public double MeanHost { get; private set; }
+
+        /// <summary>
+        /// Средняя интенсивность голов гостей
+        /// </summary>
+        public double MeanGuest { get; private set; }
+
+        public InputData(int minutesTillEnd, IEnumerable<GoalType> goals, GoalsInterval interval, double meanHost, double meanGuest)
+        {
+            MinutesTillEnd = minutesTillEnd;
+            Goals = goals.ToArray();
+            Interval = interval;
+            MeanHost = meanHost;
+            MeanGuest = meanGuest;
+        }
     }
 }
