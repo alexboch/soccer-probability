@@ -28,5 +28,7 @@ namespace SoccerProbability.Computation
         /// Интервал голов
         /// </summary>
         public GoalsInterval Interval { get; private set; }
+
+        public double MeanIntensity { get; private set; }
     }
 }

@@ -54,6 +54,8 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="Computation\Distribution\IDistribution.cs" />
+    <Compile Include="Computation\Distribution\PoissonDistribution.cs" />
     <Compile Include="Computation\GoalsInterval.cs" />
     <Compile Include="Computation\GoalType.cs" />
     <Compile Include="Computation\InputData.cs" />
