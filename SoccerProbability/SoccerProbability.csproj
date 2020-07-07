@@ -63,6 +63,7 @@
     <Compile Include="Computation\ProbModel.cs" />
     <Compile Include="Computation\ResultProbs.cs" />
     <Compile Include="Constants.cs" />
+    <Compile Include="DataPreprocessing\Data.cs" />
     <Compile Include="ViewModel.cs" />
     <Page Include="MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
