@@ -47,5 +47,10 @@ namespace SoccerProbability.DataPreprocessing
             (6, 1, 0.24),
             (6, 2, 0.17)
         };
+
+        public const double MeanHostGoals = 1.7262 / Constants.MinutesPerMatch;
+        public const double MeanGuestGoals = 1.3758 / Constants.MinutesPerMatch;
+
+
     }
 }
