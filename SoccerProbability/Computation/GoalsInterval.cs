@@ -6,13 +6,13 @@ using System.Threading.Tasks;
 
 namespace SoccerProbability.Computation
 {
-    class GoalsInterval
+    public class GoalsInterval
     {
 
         public int From { get; private set; }
         public int To { get; private set; }
 
-        public int Length => To - From;
+        public int Length => To - From + 1 ;
 
         public GoalsInterval(int from, int to)
         {
