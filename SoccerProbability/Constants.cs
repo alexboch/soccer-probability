@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace SoccerProbability
 {
-    static class Constants
+    public static class Constants
     {
         public const int MinutesPerMatch = 90;
     }

@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace SoccerProbability.Computation
 {
-    static class ProbModel
+    public static class ProbModel
     {
 
         /// <summary>

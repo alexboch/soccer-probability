@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace SoccerProbability.Computation
 {
-    enum GoalType
+    public enum GoalType
     {
         /// <summary>
         /// Забили хозяева

@@ -9,7 +9,7 @@ namespace SoccerProbability.Computation
     /// <summary>
     /// Содержит вероятности исходов
     /// </summary>
-    class ResultProbs
+    public class ResultProbs
     {
         /// <summary>
         /// Вероятность победы хозяев на заданном интервале голов,

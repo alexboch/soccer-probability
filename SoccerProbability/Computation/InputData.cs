@@ -9,7 +9,7 @@ namespace SoccerProbability.Computation
     /// <summary>
     /// Входные данные
     /// </summary>
-    class InputData
+    public class InputData
     {
         /// <summary>
         /// Минут до конца матча

@@ -6,7 +6,8 @@ using System.Threading.Tasks;
 
 namespace SoccerProbability.Computation
 {
-    class MonteCarlo
+    public class MonteCarlo
     {
+
     }
 }
