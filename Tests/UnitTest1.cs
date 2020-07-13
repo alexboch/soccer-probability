@@ -64,9 +64,10 @@ namespace Tests
             {
                 //Интервал включает все уже совершенные голы
                 var interval = new GoalsInterval(1, numGoals);
-                var goalsList = new List<GoalType>();
+                
                 for (int hostGoalsCount = 1; hostGoalsCount <= interval.Length; hostGoalsCount++)
                 {
+                    var goalsList = new List<GoalType>();
                     for (int k = 1; k <= hostGoalsCount; k++)
                     {
                         goalsList.Add(GoalType.Host);
