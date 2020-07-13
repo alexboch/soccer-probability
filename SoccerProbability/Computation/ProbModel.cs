@@ -98,27 +98,21 @@ namespace SoccerProbability.Computation
                     //Если интервал закрыт, будут забиты все голы
                     int newGuestGoals = goalsRemain - i;
 
-                    
-                    if (i <= 1 || newGuestGoals == 0)
+                    int prevGuestGoals = newGuestGoals + 1;
+                    if (i <= 1 || newGuestGoals <= 1)
                     {
                         //Вероятность, что хозяева забьют k1 раз
                         (num1, den1) = Pk(i, l1);
-                        //pk1 = Pk(i, l1);
                         //Вероятность, что гости забьют k2 раз
                         (num2, den2) = Pk(newGuestGoals, l2);
-                        //pk2 = Pk(newGuestGoals, l2);
                     }
                     else
                     {
                         num1 *= l1;
                         den1 *= i;
-                        num2 *= l2;
-                        den2 *= newGuestGoals;
-                        //pk1 *= l1 / k;
-                        //pk2 *= l2 / (newGuestGoals + 1);
-
+                        num2 *= prevGuestGoals;
+                        den2 *= l2;
                     }
-                    //pk1 = Pk(i, l1);
 
                     pk1 = num1 / den1;
                     pk2 = num2 / den2;
