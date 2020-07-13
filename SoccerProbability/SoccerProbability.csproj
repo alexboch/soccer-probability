@@ -64,7 +64,8 @@
     <Compile Include="Computation\ResultProbs.cs" />
     <Compile Include="Constants.cs" />
     <Compile Include="DataPreprocessing\ComputeStats.cs" />
-    <Compile Include="DataPreprocessing\Data.cs" />
+    <Compile Include="DataPreprocessing\StatsData.cs" />
+    <Compile Include="Properties\Annotations.cs" />
     <Compile Include="ViewModel.cs" />
     <Page Include="MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>

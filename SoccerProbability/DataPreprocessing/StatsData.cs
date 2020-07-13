@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace SoccerProbability.DataPreprocessing
 {
-    public static class Data
+    public static class StatsData
     {
         public static readonly (int, int, double)[] MatchStats =
         {

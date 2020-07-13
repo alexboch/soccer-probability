@@ -9,13 +9,13 @@ namespace SoccerProbability.Computation
     public class GoalsInterval
     {
 
-        private int _from;
+        private int _from = 1;
         public int From
         {
             get => _from;
-            private set
+            set
             {
-                if (value <= 0)
+                if (value <= 1)
                 {
                     throw new ArgumentException();
                 }
@@ -24,14 +24,14 @@ namespace SoccerProbability.Computation
             }
         }
 
-        private int _to;
+        private int _to =1;
 
         public int To
         {
             get => _to;
-            private set
+            set
             {
-                if (value <= 0)
+                if (value <= 1)
                 {
                     throw new ArgumentException();
                 }
@@ -40,8 +40,6 @@ namespace SoccerProbability.Computation
 
             }
         }
-
-        //public int Length => To - From + 1 ;
 
         public int Length
         {
@@ -60,6 +58,11 @@ namespace SoccerProbability.Computation
         {
             From = goalNumber;
             To = goalNumber;
+        }
+
+        public GoalsInterval()
+        {
+
         }
 
         public GoalsInterval(int from, int to)

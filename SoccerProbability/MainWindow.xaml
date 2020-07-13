@@ -6,7 +6,72 @@
         xmlns:local="clr-namespace:SoccerProbability"
         mc:Ignorable="d"
         Title="MainWindow" Height="450" Width="800">
+    <Window.DataContext>
+        <local:ViewModel></local:ViewModel>
+    </Window.DataContext>
+    <Window.Resources>
+        <Style x:Key="NumericTextBoxStyle"  TargetType="{x:Type TextBox}">
+            <Setter Property="Width" Value ="100"></Setter>
+            <Setter Property="HorizontalAlignment" Value="Left"></Setter>
+
+        </Style>
+        <Style TargetType="{x:Type Button}">
+            <Setter Property="Margin" Value="3"></Setter>
+            <Setter Property="Width" Value="20"></Setter>
+        </Style>
+    </Window.Resources>
     <Grid>
-        
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition></ColumnDefinition>
+            <ColumnDefinition></ColumnDefinition>
+        </Grid.ColumnDefinitions>
+        <StackPanel Margin="10">
+            <TextBlock Text="Голы"/>
+
+            <Border  Height="30" BorderThickness="1">
+                <ItemsControl ItemsSource ="{Binding Path=Goals}">
+                    <ItemsControl.ItemTemplate>
+                        <DataTemplate>
+                            <TextBlock></TextBlock>
+                        </DataTemplate>
+                    </ItemsControl.ItemTemplate>
+                </ItemsControl>
+            </Border>
+            <StackPanel Orientation="Horizontal">
+                <Button Click="AddHostGoalButtonClicked">
+                    <Button.ToolTip>
+                        Добавить гол хозяев
+                    </Button.ToolTip>
+                    X
+                </Button>
+                <Button Click="AddGuestGoalButtonClicked">
+                    <Button.ToolTip>
+                        Добавить гол гостей
+                    </Button.ToolTip>
+                    Г
+                </Button>
+                <Button Content="&lt;"></Button>
+            </StackPanel>
+
+            <TextBlock Text="Номер начального гола"></TextBlock>
+            <TextBox Text="{Binding Interval.From}"  Style="{StaticResource NumericTextBoxStyle}"></TextBox>
+            <TextBlock Text="Номер конечного гола"></TextBlock>
+            <TextBox Text="{Binding Interval.To}"  Style="{StaticResource NumericTextBoxStyle}"></TextBox>
+            <TextBlock>Минут до конца матча</TextBlock>
+            <TextBox Text ="{Binding MinutesTillEnd}"  Style="{StaticResource NumericTextBoxStyle}"></TextBox>
+            <Button Click="CalculateButtonClicked">Рассчитать</Button>
+            <GroupBox Header="Результаты">
+                <StackPanel>
+                    <TextBlock Text="Вероятность победы хозяев"></TextBlock>
+                    <TextBlock Text="{Binding HostsWinProb}"></TextBlock>
+                    <TextBlock Text="Вероятность победы гостей"></TextBlock>
+                    <TextBlock Text="{Binding GuestsWinProb}"></TextBlock>
+                    <TextBlock Text="Вероятность ничьей"></TextBlock>
+                    <TextBlock Text="{Binding DrawProb}"></TextBlock>
+                    <TextBlock Text="Вероятность того, что интервал не будет завершен"></TextBlock>
+                    <TextBlock Text="{Binding NotFinishedProb}"></TextBlock>
+                </StackPanel>
+            </GroupBox>
+        </StackPanel>
     </Grid>
 </Window>

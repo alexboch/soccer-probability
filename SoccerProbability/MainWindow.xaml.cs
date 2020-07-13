@@ -24,15 +24,22 @@ namespace SoccerProbability
         public MainWindow()
         {
             InitializeComponent();
-            var goals = new[] {GoalType.Host, GoalType.Guest , GoalType.Guest};
-            var interval = new GoalsInterval(4, 6);
-            const double meanIntensityHost = 1.7262 / Constants.MinutesPerMatch;
-            const double meanIntensityGuest = 1.3758 / Constants.MinutesPerMatch;
-
-
-            var inputData = new InputData(90, goals, interval, meanIntensityHost, meanIntensityGuest);
-            var probs = ProbModel.ComputeProbs(inputData);
-            var sp = probs.HostsWonProb + probs.GuestsWonProb + probs.DrawProb + probs.NotFinishedProb;
         }
+
+        public void AddHostGoalButtonClicked(object sender, RoutedEventArgs e)
+        {
+            ((ViewModel) DataContext).AddHostGoal();
+        }
+
+        public void AddGuestGoalButtonClicked(object sender, RoutedEventArgs e)
+        {
+            ((ViewModel) DataContext).AddGuestGoal();
+        }
+
+        public void CalculateButtonClicked(object sender, RoutedEventArgs e)
+        {
+            ((ViewModel)DataContext).Calculate();
+        }
+
     }
 }

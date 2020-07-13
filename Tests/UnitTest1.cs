@@ -31,8 +31,8 @@ namespace Tests
             for (int i = MinGoals; i <= MaxGoals; i++)
             {
                 var interval = new GoalsInterval(1, i);
-                var inputData = new InputData(Constants.MinutesPerMatch, EmptyGoals, interval, Data.MeanHostGoals,
-                    Data.MeanGuestGoals);
+                var inputData = new InputData(Constants.MinutesPerMatch, EmptyGoals, interval, StatsData.MeanHostGoals,
+                    StatsData.MeanGuestGoals);
                 var res = ProbModel.ComputeProbs(inputData);
                 TestResultProbsSum(res);
             }
@@ -47,8 +47,8 @@ namespace Tests
             for (int i = MinGoals; i <= MaxGoals; i++)
             {
                 var interval = new GoalsInterval(i);
-                var inputData = new InputData(Constants.MinutesPerMatch, EmptyGoals, interval, Data.MeanHostGoals,
-                    Data.MeanGuestGoals);
+                var inputData = new InputData(Constants.MinutesPerMatch, EmptyGoals, interval, StatsData.MeanHostGoals,
+                    StatsData.MeanGuestGoals);
                 var res = ProbModel.ComputeProbs(inputData);
 
             }
@@ -81,8 +81,8 @@ namespace Tests
                     var hostsWonProbExpected = hostGoalsCount > guestGoalsCount? 1d : 0d;
                     var guestsWonProbExpected = guestGoalsCount > hostGoalsCount ? 1d : 0d;
                     var drawProbExpected = 1 - hostsWonProbExpected - guestsWonProbExpected;
-                    var inputData = new InputData(Constants.MinutesPerMatch, goalsList, interval, Data.MeanHostGoals,
-                        Data.MeanGuestGoals);
+                    var inputData = new InputData(Constants.MinutesPerMatch, goalsList, interval, StatsData.MeanHostGoals,
+                        StatsData.MeanGuestGoals);
                     var probsResult = ProbModel.ComputeProbs(inputData);
                     var guestsWonProb = probsResult.GuestsWonProb;
                     var hostsWonProb = probsResult.HostsWonProb;
@@ -91,11 +91,11 @@ namespace Tests
                     Assert.AreEqual(guestsWonProbExpected, guestsWonProb, Delta);
                     Assert.AreEqual(drawProbExpected, drawProb, Delta);
                 }
-
-              
             }
 
         }
+
+
 
     }
 }

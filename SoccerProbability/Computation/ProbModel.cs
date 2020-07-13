@@ -125,7 +125,7 @@ namespace SoccerProbability.Computation
                         //Если хозяева выиграют
                         hostsWinProb += p;
                     }
-                    if (guestsTotalGoals > hostsTotalGoals)
+                    else if (guestsTotalGoals > hostsTotalGoals)
                     {
                         //Если гости выиграют
                         guestsWinProb += p;
