@@ -15,7 +15,7 @@ namespace SoccerProbability.Computation
             get => _from;
             set
             {
-                if (value <= 1)
+                if (value < 1)
                 {
                     throw new ArgumentException();
                 }
@@ -31,7 +31,7 @@ namespace SoccerProbability.Computation
             get => _to;
             set
             {
-                if (value <= 1)
+                if (value < 1)
                 {
                     throw new ArgumentException();
                 }

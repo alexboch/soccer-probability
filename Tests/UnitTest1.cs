@@ -23,21 +23,6 @@ namespace Tests
             Assert.AreEqual(sum, 1, 0.001);
         }
 
-        [TestMethod]
-        public void TestIsFullEventsGroup()
-        {
-
-            //Для i голов проверить, что суммарная вероятность равна 1
-            for (int i = MinGoals; i <= MaxGoals; i++)
-            {
-                var interval = new GoalsInterval(1, i);
-                var inputData = new InputData(Constants.MinutesPerMatch, EmptyGoals, interval, StatsData.MeanHostGoals,
-                    StatsData.MeanGuestGoals);
-                var res = ProbModel.ComputeProbs(inputData);
-                TestResultProbsSum(res);
-            }
-        }
-
         /// <summary>
         /// Проверка вычисления вероятности, когда в интервале используется 
         /// </summary>

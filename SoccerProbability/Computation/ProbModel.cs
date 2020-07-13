@@ -32,13 +32,12 @@ namespace SoccerProbability.Computation
         /// <param name="meanByMinutes">Средняя интенсивность</param>
         /// <param name="minutes">Кол-во минут, в течении которых может наступить k событий</param>
         /// <returns>Кортеж, содержащий числитель и знаменатель</returns>
-        private static (double, double) Pk(int k, double l)
+        private static double Pk(int k, double l)
         {
             var exp = Math.Exp(-l);
             var lPow = Math.Pow(l, k);
             var f = Fact(k);
-            return (lPow * exp, f);
-            //return lPow / f * exp;
+            return lPow / f * exp;
         }
 
 
@@ -81,65 +80,50 @@ namespace SoccerProbability.Computation
             double drawProb = 0;
             var l1 = meanHost * minutesLeft;
             var l2 = meanGuest * minutesLeft;
-
+            var notFinishedProb = 0d;
             if (goalsRemain > 0)
             {
-                double pk1 = 0;
-                double pk2 = 0;
-
-                double num1 = 1;
-                double den1 = 1;
-                double num2 = 1;
-                double den2 = 1;
                 for (int i = 0; i <= goalsRemain; i++)
                 {
-                    int hostsTotalGoals = hostsGoalsBeforeInInterval;
-                    int guestsTotalGoals = guestGoalsBeforeInInterval;
-                    //Если интервал закрыт, будут забиты все голы
-                    int newGuestGoals = goalsRemain - i;
-
-                    int prevGuestGoals = newGuestGoals + 1;
-                    if (i <= 1 || newGuestGoals <= 1)
+                    int hostsTotalGoals = hostsGoalsBeforeInInterval + i;
+                    for (int newGuestGoals = goalsRemain - i; newGuestGoals >= 0; newGuestGoals--)
                     {
+                        int guestsTotalGoals = guestGoalsBeforeInInterval + newGuestGoals;
                         //Вероятность, что хозяева забьют k1 раз
-                        (num1, den1) = Pk(i, l1);
+                        double pk1 = Pk(i, l1); 
                         //Вероятность, что гости забьют k2 раз
-                        (num2, den2) = Pk(newGuestGoals, l2);
-                    }
-                    else
-                    {
-                        num1 *= l1;
-                        den1 *= i;
-                        num2 *= prevGuestGoals;
-                        den2 *= l2;
-                    }
-
-                    pk1 = num1 / den1;
-                    pk2 = num2 / den2;
-                    //Вероятность совместного наступления
-                    var p = pk1 * pk2;
-                    hostsTotalGoals += i;
-                    guestsTotalGoals += newGuestGoals;
-                    if (hostsTotalGoals > guestsTotalGoals)
-                    {
-                        //Если хозяева выиграют
-                        hostsWinProb += p;
-                    }
-                    else if (guestsTotalGoals > hostsTotalGoals)
-                    {
-                        //Если гости выиграют
-                        guestsWinProb += p;
-                    }
-                    else
-                    {
-                        //Ничья
-                        drawProb += p;
+                        double pk2 = Pk(newGuestGoals, l2); 
+                        //Вероятность совместного наступления
+                        var p = pk1 * pk2;
+                        //Если интервал закрывается
+                        if (newGuestGoals + i == goalsRemain)
+                        {
+                            if (hostsTotalGoals > guestsTotalGoals)
+                            {
+                                //Если хозяева выиграют
+                                hostsWinProb += p;
+                            }
+                            else if (guestsTotalGoals > hostsTotalGoals)
+                            {
+                                //Если гости выиграют
+                                guestsWinProb += p;
+                            }
+                            else
+                            {
+                                //Ничья
+                                drawProb += p;
+                            }
+                        }
+                        else
+                        {
+                            //Интервал не завершен
+                            notFinishedProb += p;
+                        }
                     }
                 }
             }
             else
             {
-                
                 if (guestGoalsBeforeInInterval == hostsGoalsBeforeInInterval)
                 {
                     //Если кол-во голов одинаковое, то ничья
@@ -162,8 +146,6 @@ namespace SoccerProbability.Computation
                     drawProb = 0;
                 }
             }
-            //Через обратную вероятность
-            var notFinishedProb = 1 - (hostsWinProb + guestsWinProb + drawProb);
             return new ResultProbs(hostsWinProb, guestsWinProb, drawProb, notFinishedProb);
         }
     }
