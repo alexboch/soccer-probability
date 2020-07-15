@@ -41,5 +41,10 @@ namespace SoccerProbability
             ((ViewModel)DataContext).Calculate();
         }
 
+        public void DeleteButtonClicked(object sender, RoutedEventArgs e)
+        {
+            ((ViewModel) DataContext).DeleteLastGoal();
+        }
+
     }
 }

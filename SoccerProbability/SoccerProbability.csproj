@@ -59,11 +59,13 @@
     <Compile Include="Computation\GoalsInterval.cs" />
     <Compile Include="Computation\GoalType.cs" />
     <Compile Include="Computation\InputData.cs" />
+    <Compile Include="Computation\MonteCarlo.cs" />
     <Compile Include="Computation\ProbModel.cs" />
     <Compile Include="Computation\ResultProbs.cs" />
     <Compile Include="Constants.cs" />
     <Compile Include="DataPreprocessing\ComputeStats.cs" />
     <Compile Include="DataPreprocessing\StatsData.cs" />
+    <Compile Include="GoalsConverter.cs" />
     <Compile Include="Properties\Annotations.cs" />
     <Compile Include="ViewModel.cs" />
     <Page Include="MainWindow.xaml">

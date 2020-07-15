@@ -71,7 +71,6 @@ namespace SoccerProbability.Computation
                 }
             }
 
-            //Расчет вероятности того, что хозяева забьют k голов, при этом гости забьют k1 голов
             int goalsRemain = interval.To - goalsBefore.Length;
             //Вероятности выигрышей (с закрытием интервала)
             double hostsWinProb = 0;

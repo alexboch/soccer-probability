@@ -76,6 +76,14 @@ namespace SoccerProbability
             Goals.Add(GoalType.Host);
         }
 
+        public void DeleteLastGoal()
+        {
+            if (Goals.Count > 0)
+            {
+                Goals.RemoveAt(Goals.Count - 1);
+            }
+        }
+
         public void Calculate()
         {
             var data = StatsData.MatchStats;

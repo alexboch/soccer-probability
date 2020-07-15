@@ -15,6 +15,7 @@
             <Setter Property="HorizontalAlignment" Value="Left"></Setter>
 
         </Style>
+        <local:GoalsConverter x:Key="GoalsConv"></local:GoalsConverter>
         <Style TargetType="{x:Type Button}">
             <Setter Property="Margin" Value="3"></Setter>
             <Setter Property="Width" Value="20"></Setter>
@@ -30,9 +31,14 @@
 
             <Border  Height="30" BorderThickness="1">
                 <ItemsControl ItemsSource ="{Binding Path=Goals}">
+                    <ItemsControl.ItemsPanel>
+                        <ItemsPanelTemplate>
+                            <StackPanel Orientation="Horizontal"/>
+                        </ItemsPanelTemplate>
+                    </ItemsControl.ItemsPanel>
                     <ItemsControl.ItemTemplate>
                         <DataTemplate>
-                            <TextBlock></TextBlock>
+                            <TextBlock Text="{Binding Converter={StaticResource GoalsConv}}"></TextBlock>
                         </DataTemplate>
                     </ItemsControl.ItemTemplate>
                 </ItemsControl>
@@ -50,7 +56,7 @@
                     </Button.ToolTip>
                     Г
                 </Button>
-                <Button Content="&lt;"></Button>
+                <Button Content="&lt;" Click="DeleteButtonClicked"></Button>
             </StackPanel>
 
             <TextBlock Text="Номер начального гола"></TextBlock>
@@ -59,7 +65,7 @@
             <TextBox Text="{Binding Interval.To}"  Style="{StaticResource NumericTextBoxStyle}"></TextBox>
             <TextBlock>Минут до конца матча</TextBlock>
             <TextBox Text ="{Binding MinutesTillEnd}"  Style="{StaticResource NumericTextBoxStyle}"></TextBox>
-            <Button Click="CalculateButtonClicked">Рассчитать</Button>
+            <Button Click="CalculateButtonClicked" Width="100">Рассчитать</Button>
             <GroupBox Header="Результаты">
                 <StackPanel>
                     <TextBlock Text="Вероятность победы хозяев"></TextBlock>

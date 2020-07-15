@@ -39,6 +39,8 @@ namespace SoccerProbability.Computation
         /// </summary>
         public double MeanIntensityGuest { get; private set; }
 
+        public int GoalsRemain => Interval.To - Goals.Length;
+
         public InputData(int minutesTillEnd, IEnumerable<GoalType> goals, GoalsInterval interval, double meanIntensityHost, double meanIntensityGuest)
         {
             MinutesTillEnd = minutesTillEnd;
