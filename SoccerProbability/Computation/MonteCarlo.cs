@@ -6,9 +6,9 @@ using System.Threading.Tasks;
 
 namespace SoccerProbability.Computation
 {
-    public class MonteCarlo
+    public static class MonteCarlo
     {
-        public ResultProbs Generate(InputData inputData, int numMatches)
+        public static ResultProbs Generate(InputData inputData, int numMatches)
         {
             var meanIntensityHost = inputData.MeanIntensityHost;
             var meanIntensityGuest = inputData.MeanIntensityGuest;
@@ -55,20 +55,22 @@ namespace SoccerProbability.Computation
                 {
                     numNotFinished++;
                 }
-
-                if (numGoalsHost > numGoalsGuest)
+                else
                 {
-                    numHostsWin++;
-                }
+                    if (numGoalsHost > numGoalsGuest)
+                    {
+                        numHostsWin++;
+                    }
 
-                if (numGoalsGuest < numGoalsHost)
-                {
-                    numGuestsWin++;
-                }
+                    if (numGoalsGuest > numGoalsHost)
+                    {
+                        numGuestsWin++;
+                    }
 
-                if (numGoalsGuest == numGoalsHost)
-                {
-                    numDraws++;
+                    if (numGoalsGuest == numGoalsHost)
+                    {
+                        numDraws++;
+                    }
                 }
 
             }

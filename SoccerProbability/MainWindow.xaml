@@ -79,5 +79,19 @@
                 </StackPanel>
             </GroupBox>
         </StackPanel>
+        <StackPanel Grid.Column ="1">
+            <GroupBox Header="Результаты метода Монте-Карло">
+                <StackPanel>
+                    <TextBlock Text="Вероятность победы хозяев"></TextBlock>
+                    <TextBlock Text="{Binding HostsMonteCarloWinProb}"></TextBlock>
+                    <TextBlock Text="Вероятность победы гостей"></TextBlock>
+                    <TextBlock Text="{Binding GuestsMonteCarloWinProb}"></TextBlock>
+                    <TextBlock Text="Вероятность ничьей"></TextBlock>
+                    <TextBlock Text="{Binding DrawMonteCarloProb}"></TextBlock>
+                    <TextBlock Text="Вероятность того, что интервал не будет завершен"></TextBlock>
+                    <TextBlock Text="{Binding NotFinishedMonteCarloProb}"></TextBlock>
+                </StackPanel>
+            </GroupBox>
+        </StackPanel>
     </Grid>
 </Window>

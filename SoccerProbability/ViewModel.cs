@@ -18,6 +18,8 @@ namespace SoccerProbability
         public int MinutesTillEnd { get; set; } = Constants.MinutesPerMatch;
         public GoalsInterval Interval { get; set; } = new GoalsInterval();
 
+
+        #region Calculated probabilities
         private double _hostsWinProb;
 
         public double HostsWinProb
@@ -66,6 +68,58 @@ namespace SoccerProbability
             }
         }
 
+        #endregion
+
+        #region Monte-Carlo
+        private double _hostsMonteCarloWinProb;
+
+        public double HostsMonteCarloWinProb
+        {
+            get => _hostsMonteCarloWinProb;
+            set
+            {
+                _hostsMonteCarloWinProb = value;
+                OnPropertyChanged();
+            }
+        }
+
+        private double _guestsMonteCarloWinProb;
+
+        public double GuestsMonteCarloWinProb
+        {
+            get => _guestsMonteCarloWinProb;
+            set
+            {
+                _guestsMonteCarloWinProb = value;
+                OnPropertyChanged();
+            }
+        }
+
+        private double _drawMonteCarloProb;
+
+        public double DrawMonteCarloProb
+        {
+            get => _drawMonteCarloProb;
+            set
+            {
+                _drawMonteCarloProb = value;
+                OnPropertyChanged();
+            }
+        }
+
+        private double _notFinishedMonteCarloProb;
+
+        public double NotFinishedMonteCarloProb
+        {
+            get => _notFinishedMonteCarloProb;
+            set
+            {
+                _notFinishedMonteCarloProb = value;
+                OnPropertyChanged();
+            }
+        }
+        #endregion
+
         public void AddGuestGoal()
         {
             Goals.Add(GoalType.Guest);
@@ -94,6 +148,11 @@ namespace SoccerProbability
             GuestsWinProb = result.GuestsWonProb;
             DrawProb = result.DrawProb;
             NotFinishedProb = result.NotFinishedProb;
+            var monteCarloResult = MonteCarlo.Generate(inputData, 10000);
+            HostsMonteCarloWinProb = monteCarloResult.HostsWonProb;
+            GuestsMonteCarloWinProb = monteCarloResult.GuestsWonProb;
+            DrawMonteCarloProb = monteCarloResult.DrawProb;
+            NotFinishedMonteCarloProb = monteCarloResult.NotFinishedProb;
         }
 
         public event PropertyChangedEventHandler PropertyChanged;
