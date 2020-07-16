@@ -44,7 +44,7 @@ namespace SoccerProbability.Computation
         /// Функция распределения для распределения Пуассона
         /// </summary>
         /// <returns></returns>
-        public static double CDF(int k, double l)
+        public static double CDFPoisson(int k, double l)
         {
             var sum = 0d;
             for (int i = 0; i <= k; i++)
@@ -54,6 +54,8 @@ namespace SoccerProbability.Computation
 
             return Math.Exp(-l) * sum;
         }
+
+
 
         public static ResultProbs ComputeProbs(InputData input)
         {
