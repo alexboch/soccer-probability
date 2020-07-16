@@ -40,6 +40,20 @@ namespace SoccerProbability.Computation
             return lPow / f * exp;
         }
 
+        /// <summary>
+        /// Функция распределения для распределения Пуассона
+        /// </summary>
+        /// <returns></returns>
+        public static double CDF(int k, double l)
+        {
+            var sum = 0d;
+            for (int i = 0; i <= k; i++)
+            {
+                sum += Math.Pow(l, i) / Fact(i);
+            }
+
+            return Math.Exp(-l) * sum;
+        }
 
         public static ResultProbs ComputeProbs(InputData input)
         {
@@ -81,11 +95,11 @@ namespace SoccerProbability.Computation
             var notFinishedProb = 0d;
             if (goalsRemain > 0)
             {
-                var prevGuestsWonProbInMinute = 0d;
-                var prevHostsWonProbInMinute = 0d;
-                var prevDrawProbInMinute = 0d;
-                var prevNotFinishedProbInMinute = 0d;
-                for (int minutes = 0; minutes < minutesTillEnd; minutes++)
+
+                var hostsWinProbs = new double[minutesTillEnd + 1];
+                var guestsWinProbs = new double[minutesTillEnd + 1];
+                var drawProbs = new double[minutesTillEnd + 1];
+                for (int minutes = 0; minutes <= minutesTillEnd; minutes++)
                 {
                     var l1 = meanHost * minutes;
                     var l2 = meanGuest * minutes;
@@ -93,8 +107,6 @@ namespace SoccerProbability.Computation
                     var hostsWonProbInMinute = 0d;
                     var drawProbInMinute = 0d;
                     var notFinishedProbInMinute = 0d;
-
-                 
                     for (int newHostGoals = 0; newHostGoals <= goalsRemain; newHostGoals++)
                     {
                         int hostsTotalGoals = hostsGoalsBeforeInInterval + newHostGoals;
@@ -137,17 +149,30 @@ namespace SoccerProbability.Computation
                             }
                         }
                     }
-                    hostsWinProb = hostsWonProbInMinute + prevHostsWonProbInMinute -
-                                   hostsWonProbInMinute * prevHostsWonProbInMinute;
-                    guestsWinProb = guestsWonProbInMinute + prevGuestsWonProbInMinute -
-                                    guestsWonProbInMinute * prevGuestsWonProbInMinute;
-                    drawProb = drawProbInMinute + prevDrawProbInMinute - drawProbInMinute * prevDrawProbInMinute;
-                    notFinishedProb += prevNotFinishedProbInMinute * notFinishedProbInMinute;
-                    prevGuestsWonProbInMinute = guestsWonProbInMinute;
-                    prevHostsWonProbInMinute = hostsWonProbInMinute;
-                    prevDrawProbInMinute = drawProbInMinute;
-                    prevNotFinishedProbInMinute = notFinishedProbInMinute;
+                    //Вероятности завершения интервала с победой хозяев
+                    hostsWinProbs[minutes] = hostsWonProbInMinute;
+                    //Вероятности завершения интервала с победой гостей
+                    guestsWinProbs[minutes] = guestsWonProbInMinute;
+                    //Вероятности завршения интервала с ничьей
+                    drawProbs[minutes] = drawProbInMinute;
                 }
+
+                var hostSumProb = 0d;
+                var guestsSumProb = 0d;
+                var drawSumProb = 0d;
+                for (int i = 1; i < minutesTillEnd + 1; i++)
+                {
+                    //guestsWinProb += (guestsWinProbs[i] - guestsWinProbs[i -1]);
+                    //hostsWinProb += (hostsWinProbs[i] - hostsWinProbs[i - 1]);
+                    //drawSumProb += (drawProbs[i] - drawProbs[i - 1]);
+                    hostsWinProb += (hostsWinProbs[i] - hostSumProb);
+
+                    hostSumProb += (hostsWinProbs[i] - hostsWinProbs[i - 1]);
+                    //hostSumProb += hostsWinProbs[i];
+                    //guestsSumProb += guestsWinProbs[i];
+                    //drawSumProb += drawProbs[i];
+                }
+
             }
             else
             {
