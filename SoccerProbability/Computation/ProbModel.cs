@@ -137,17 +137,12 @@ namespace SoccerProbability.Computation
                             }
                         }
                     }
-                    //Вероятность через столько минут минус вероятность за предыдущие минуты
-                    hostsWonProbInMinute -= prevHostsWonProbInMinute;
-                    guestsWonProbInMinute -= prevGuestsWonProbInMinute;
-                    drawProbInMinute -= prevDrawProbInMinute;
-                    notFinishedProbInMinute -= prevNotFinishedProbInMinute;
-
-                    hostsWinProb += hostsWonProbInMinute;
-                    guestsWinProb += guestsWonProbInMinute;
-                    drawProb += drawProbInMinute;
-                    notFinishedProb += notFinishedProbInMinute;
-
+                    hostsWinProb = hostsWonProbInMinute + prevHostsWonProbInMinute -
+                                   hostsWonProbInMinute * prevHostsWonProbInMinute;
+                    guestsWinProb = guestsWonProbInMinute + prevGuestsWonProbInMinute -
+                                    guestsWonProbInMinute * prevGuestsWonProbInMinute;
+                    drawProb = drawProbInMinute + prevDrawProbInMinute - drawProbInMinute * prevDrawProbInMinute;
+                    notFinishedProb += prevNotFinishedProbInMinute * notFinishedProbInMinute;
                     prevGuestsWonProbInMinute = guestsWonProbInMinute;
                     prevHostsWonProbInMinute = hostsWonProbInMinute;
                     prevDrawProbInMinute = drawProbInMinute;
