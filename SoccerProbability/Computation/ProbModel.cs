@@ -44,7 +44,7 @@ namespace SoccerProbability.Computation
         public static ResultProbs ComputeProbs(InputData input)
         {
             var goalsBefore = input.Goals;
-            int minutesLeft = input.MinutesTillEnd;
+            int minutesTillEnd = input.MinutesTillEnd;
             var interval = input.Interval;
             int firstGoalIndex = interval.From - 1;
             //Голов хозяев, сделанных в рассматриваемом интервале
@@ -77,52 +77,86 @@ namespace SoccerProbability.Computation
             double guestsWinProb = 0;
             //Вероятность ничьей с закрытием интервала
             double drawProb = 0;
-            var l1 = meanHost * minutesLeft;
-            var l2 = meanGuest * minutesLeft;
+           
             var notFinishedProb = 0d;
             if (goalsRemain > 0)
             {
-                for (int i = 0; i <= goalsRemain; i++)
+                var prevGuestsWonProbInMinute = 0d;
+                var prevHostsWonProbInMinute = 0d;
+                var prevDrawProbInMinute = 0d;
+                var prevNotFinishedProbInMinute = 0d;
+                for (int minutes = 0; minutes < minutesTillEnd; minutes++)
                 {
-                    int hostsTotalGoals = hostsGoalsBeforeInInterval + i;
-                    for (int newGuestGoals = goalsRemain - i; newGuestGoals >= 0; newGuestGoals--)
+                    var l1 = meanHost * minutes;
+                    var l2 = meanGuest * minutes;
+                    var guestsWonProbInMinute = 0d;
+                    var hostsWonProbInMinute = 0d;
+                    var drawProbInMinute = 0d;
+                    var notFinishedProbInMinute = 0d;
+
+                 
+                    for (int newHostGoals = 0; newHostGoals <= goalsRemain; newHostGoals++)
                     {
-                        int guestsTotalGoals = guestGoalsBeforeInInterval + newGuestGoals;
-                        //Вероятность, что хозяева забьют k1 раз
-                        double pk1 = Pk(i, l1); 
-                        //Вероятность, что гости забьют k2 раз
-                        double pk2 = Pk(newGuestGoals, l2); 
-                        //Вероятность совместного наступления
-                        var p = pk1 * pk2;
-                        //Если интервал закрывается
-                        if (newGuestGoals + i == goalsRemain)
+                        int hostsTotalGoals = hostsGoalsBeforeInInterval + newHostGoals;
+                        for (int newGuestGoals = goalsRemain - newHostGoals; newGuestGoals >= 0; newGuestGoals--)
                         {
-                            if (hostsTotalGoals > guestsTotalGoals)
+                            int guestsTotalGoals = guestGoalsBeforeInInterval + newGuestGoals;
+                            //Вероятность, что хозяева забьют k1 раз
+                            double pk1 = Pk(newHostGoals, l1);
+                            //Вероятность, что гости забьют k2 раз
+                            double pk2 = Pk(newGuestGoals, l2);
+                            //Вероятность совместного наступления
+                            var p = pk1 * pk2;
+                            //Если интервал закрывается
+                            if (newGuestGoals + newHostGoals == goalsRemain)
                             {
-                                //Если хозяева выиграют
-                                hostsWinProb += p;
-                            }
-                            else if (guestsTotalGoals > hostsTotalGoals)
-                            {
-                                //Если гости выиграют
-                                guestsWinProb += p;
+                                if (hostsTotalGoals > guestsTotalGoals)
+                                {
+                                    //Если хозяева выиграют
+                                    //hostsWinProb += p;
+                                    hostsWonProbInMinute += p;
+                                }
+                                else if (guestsTotalGoals > hostsTotalGoals)
+                                {
+                                    //Если гости выиграют
+                                    //guestsWinProb += p;
+                                    guestsWonProbInMinute += p;
+                                }
+                                else
+                                {
+                                    //Ничья
+                                    //drawProb += p;
+                                    drawProbInMinute += p;
+                                }
                             }
                             else
                             {
-                                //Ничья
-                                drawProb += p;
+                                //Интервал не завершен
+                                //notFinishedProb += p;
+                                notFinishedProbInMinute += p;
                             }
                         }
-                        else
-                        {
-                            //Интервал не завершен
-                            notFinishedProb += p;
-                        }
                     }
+                    //Вероятность через столько минут минус вероятность за предыдущие минуты
+                    hostsWonProbInMinute -= prevHostsWonProbInMinute;
+                    guestsWonProbInMinute -= prevGuestsWonProbInMinute;
+                    drawProbInMinute -= prevDrawProbInMinute;
+                    notFinishedProbInMinute -= prevNotFinishedProbInMinute;
+
+                    hostsWinProb += hostsWonProbInMinute;
+                    guestsWinProb += guestsWonProbInMinute;
+                    drawProb += drawProbInMinute;
+                    notFinishedProb += notFinishedProbInMinute;
+
+                    prevGuestsWonProbInMinute = guestsWonProbInMinute;
+                    prevHostsWonProbInMinute = hostsWonProbInMinute;
+                    prevDrawProbInMinute = drawProbInMinute;
+                    prevNotFinishedProbInMinute = notFinishedProbInMinute;
                 }
             }
             else
             {
+                //Если все голы 
                 if (guestGoalsBeforeInInterval == hostsGoalsBeforeInInterval)
                 {
                     //Если кол-во голов одинаковое, то ничья
