@@ -32,7 +32,7 @@ namespace SoccerProbability.Computation
         /// <param name="meanByMinutes">Средняя интенсивность</param>
         /// <param name="minutes">Кол-во минут, в течении которых может наступить k событий</param>
         /// <returns>Кортеж, содержащий числитель и знаменатель</returns>
-        private static double Pk(int k, double l)
+        private static double ProbPoisson(int k, double l)
         {
             var exp = Math.Exp(-l);
             var lPow = Math.Pow(l, k);
@@ -97,83 +97,10 @@ namespace SoccerProbability.Computation
             var notFinishedProb = 0d;
             if (goalsRemain > 0)
             {
-
-                var hostsWinProbs = new double[minutesTillEnd + 1];
-                var guestsWinProbs = new double[minutesTillEnd + 1];
-                var drawProbs = new double[minutesTillEnd + 1];
-                for (int minutes = 0; minutes <= minutesTillEnd; minutes++)
-                {
-                    var l1 = meanHost * minutes;
-                    var l2 = meanGuest * minutes;
-                    var guestsWonProbInMinute = 0d;
-                    var hostsWonProbInMinute = 0d;
-                    var drawProbInMinute = 0d;
-                    var notFinishedProbInMinute = 0d;
-                    for (int newHostGoals = 0; newHostGoals <= goalsRemain; newHostGoals++)
-                    {
-                        int hostsTotalGoals = hostsGoalsBeforeInInterval + newHostGoals;
-                        for (int newGuestGoals = goalsRemain - newHostGoals; newGuestGoals >= 0; newGuestGoals--)
-                        {
-                            int guestsTotalGoals = guestGoalsBeforeInInterval + newGuestGoals;
-                            //Вероятность, что хозяева забьют k1 раз
-                            double pk1 = Pk(newHostGoals, l1);
-                            //Вероятность, что гости забьют k2 раз
-                            double pk2 = Pk(newGuestGoals, l2);
-                            //Вероятность совместного наступления
-                            var p = pk1 * pk2;
-                            //Если интервал закрывается
-                            if (newGuestGoals + newHostGoals == goalsRemain)
-                            {
-                                if (hostsTotalGoals > guestsTotalGoals)
-                                {
-                                    //Если хозяева выиграют
-                                    //hostsWinProb += p;
-                                    hostsWonProbInMinute += p;
-                                }
-                                else if (guestsTotalGoals > hostsTotalGoals)
-                                {
-                                    //Если гости выиграют
-                                    //guestsWinProb += p;
-                                    guestsWonProbInMinute += p;
-                                }
-                                else
-                                {
-                                    //Ничья
-                                    //drawProb += p;
-                                    drawProbInMinute += p;
-                                }
-                            }
-                            else
-                            {
-                                //Интервал не завершен
-                                //notFinishedProb += p;
-                                notFinishedProbInMinute += p;
-                            }
-                        }
-                    }
-                    //Вероятности завершения интервала с победой хозяев
-                    hostsWinProbs[minutes] = hostsWonProbInMinute;
-                    //Вероятности завершения интервала с победой гостей
-                    guestsWinProbs[minutes] = guestsWonProbInMinute;
-                    //Вероятности завршения интервала с ничьей
-                    drawProbs[minutes] = drawProbInMinute;
-                }
-
-                var hostSumProb = 0d;
-                var guestsSumProb = 0d;
-                var drawSumProb = 0d;
-                for (int i = 1; i < minutesTillEnd + 1; i++)
-                {
-                    //guestsWinProb += (guestsWinProbs[i] - guestsWinProbs[i -1]);
-                    //hostsWinProb += (hostsWinProbs[i] - hostsWinProbs[i - 1]);
-                    //drawSumProb += (drawProbs[i] - drawProbs[i - 1]);
-                    hostsWinProb += (hostsWinProbs[i] - hostSumProb);
-
-                    hostSumProb += (hostsWinProbs[i] - hostsWinProbs[i - 1]);
-                    //hostSumProb += hostsWinProbs[i];
-                    //guestsSumProb += guestsWinProbs[i];
-                    //drawSumProb += drawProbs[i];
-                }
+                
+                var l1 = meanHost * minutesTillEnd;
+                var l2 = meanGuest * minutesTillEnd;
+                notFinishedProb = CDFPoisson(goalsRemain - 1, l1 + l2);
 
             }
             else
