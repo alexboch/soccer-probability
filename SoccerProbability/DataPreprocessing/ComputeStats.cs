@@ -21,6 +21,11 @@ namespace SoccerProbability.DataPreprocessing
             return means;
         }
 
+        /// <summary>
+        /// Вычисляет средние по статистическим данным
+        /// </summary>
+        /// <param name="goalStats"></param>
+        /// <returns></returns>
         public static (double, double) ComputeMeans(IEnumerable<(int, int, double)> goalStats)
         {
             var goalsList = goalStats.ToList();

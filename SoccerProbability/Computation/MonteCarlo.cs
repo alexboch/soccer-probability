@@ -24,6 +24,7 @@ namespace SoccerProbability.Computation
                 {
                     int numGoalsHost = 0;
                     int numGoalsGuest = 0;
+                    //Подсчитаем количество уже произошедших голов
                     for (int l = inputData.Interval.From; l <= inputData.Interval.To; l++)
                     {
                         if (l > inputData.Goals.Length)
@@ -99,7 +100,7 @@ namespace SoccerProbability.Computation
                     }
 
                 }
-
+                //Посчитаем частоты исходов
                 var hostsWonFrac = (double) numHostsWin / numMatches;
                 var guestsWonFrac = (double) numGuestsWin / numMatches;
                 var drawFrac = (double) numDraws / numMatches;
