@@ -146,12 +146,13 @@ namespace SoccerProbability.Computation
                 {
                     var p = ProbBinom(goalsRemain, hostGoals, pHost);
                     var guestGoals = goalsRemain - hostGoals;
-
-                    if (hostGoals > guestGoals)
+                    var totalHostGoals = hostGoals + hostsGoalsBeforeInInterval;
+                    var totalGuestGoals = guestGoals + guestGoalsBeforeInInterval;
+                    if (totalHostGoals > totalGuestGoals)
                     {
                         hostsWinProb += p;
                     }
-                    else if (guestGoals > hostGoals)
+                    else if (totalGuestGoals > totalHostGoals)
                     {
                         guestsWinProb += p;
                     }

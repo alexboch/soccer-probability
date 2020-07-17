@@ -20,10 +20,26 @@ namespace SoccerProbability.Computation
             int goalsRemain = inputData.GoalsRemain;
             for (int i = 0; i < numMatches; i++)
             {
-                var numGoalsHost = inputData.Goals.Count(g => g is GoalType.Host);
-                var numGoalsGuest = inputData.Goals.Count(g => g is GoalType.Guest);
+                int numGoalsHost = 0;
+                int numGoalsGuest = 0;
+                for (int l = inputData.Interval.From; l <= inputData.Interval.To; l++)
+                {
+                    if (l > inputData.Goals.Length)
+                    {
+                        break;
+                    }
+                    if (inputData.Goals[l - 1] is GoalType.Host)
+                    {
+                        numGoalsHost++;
+                    }
+                    else
+                    {
+                        numGoalsGuest++;
+                    }
+                }
                 if (goalsRemain > 0)
                 {
+                    int goalsCounter = goalsRemain;
                     for (int j = 0; j < inputData.MinutesTillEnd; j++)
                     {
                         var r1 = rand.NextDouble();
@@ -33,25 +49,29 @@ namespace SoccerProbability.Computation
                         {
                             //Гол хозяев
                             numGoalsHost++;
-                            if (numGoalsHost + numGoalsGuest == goalsRemain)
-                            {
-                                break;
-                            }
+                            goalsCounter--;
+                        }
+                        if (goalsCounter == 0)
+                        {
+                            break;
                         }
 
                         if (r2 <= meanIntensityGuest)
                         {
                             //Гол гостей
                             numGoalsGuest++;
-                            if (numGoalsHost + numGoalsGuest == goalsRemain)
-                            {
-                                break;
-                            }
+                            goalsCounter--;
                         }
+
+                        if (goalsCounter == 0)
+                        {
+                            break;
+                        }
+
                     }
                 }
 
-                if (numGoalsHost + numGoalsGuest < goalsRemain)
+                if (numGoalsHost + numGoalsGuest < inputData.Interval.Length)
                 {
                     numNotFinished++;
                 }
@@ -78,7 +98,7 @@ namespace SoccerProbability.Computation
             var hostsWonFrac = (double)numHostsWin / numMatches;
             var guestsWonFrac = (double)numGuestsWin / numMatches;
             var drawFrac = (double)numDraws / numMatches;
-            var notFinishedFrac = (double) numNotFinished / numMatches;
+            var notFinishedFrac = (double)numNotFinished / numMatches;
             var res = new ResultProbs(hostsWonFrac, guestsWonFrac, drawFrac, notFinishedFrac);
             return res;
         }
