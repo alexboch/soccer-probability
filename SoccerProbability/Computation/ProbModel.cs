@@ -93,109 +93,115 @@ namespace SoccerProbability.Computation
         }
 
 
-        public static ResultProbs ComputeProbs(InputData input)
+        public static async Task<ResultProbs> ComputeProbs(InputData input)
         {
-            var goalsBefore = input.Goals;
-            int minutesTillEnd = input.MinutesTillEnd;
-            var interval = input.Interval;
-            int firstGoalIndex = interval.From - 1;
-            //Голов хозяев, сделанных в рассматриваемом интервале
-            int hostsGoalsBeforeInInterval = 0;
-            int guestGoalsBeforeInInterval = 0;
-            //Средняя интенсивность потока событий
-            var meanHost = input.MeanIntensityHost;
-            var meanGuest = input.MeanIntensityGuest;
-            int maxIndex = interval.To < goalsBefore.Length ? interval.To : goalsBefore.Length;
-            //Если некоторые голы уже произошли
-            if (firstGoalIndex < goalsBefore.Length)
+            var probsResult = await Task.Run(() =>
             {
-                //Цикл от первого гола до последнего гола из уже произошедших
-                for (int i = firstGoalIndex; i < maxIndex; i++)
+                var goalsBefore = input.Goals;
+                int minutesTillEnd = input.MinutesTillEnd;
+                var interval = input.Interval;
+                int firstGoalIndex = interval.From - 1;
+                //Голов хозяев, сделанных в рассматриваемом интервале
+                int hostsGoalsBeforeInInterval = 0;
+                int guestGoalsBeforeInInterval = 0;
+                //Средняя интенсивность потока событий
+                var meanHost = input.MeanIntensityHost;
+                var meanGuest = input.MeanIntensityGuest;
+                int maxIndex = interval.To < goalsBefore.Length ? interval.To : goalsBefore.Length;
+                //Если некоторые голы уже произошли
+                if (firstGoalIndex < goalsBefore.Length)
                 {
-                    if (goalsBefore[i] == GoalType.Host)
+                    //Цикл от первого гола до последнего гола из уже произошедших
+                    for (int i = firstGoalIndex; i < maxIndex; i++)
                     {
-                        hostsGoalsBeforeInInterval++;
-                    }
-                    else
-                    {
-                        guestGoalsBeforeInInterval++;
+                        if (goalsBefore[i] == GoalType.Host)
+                        {
+                            hostsGoalsBeforeInInterval++;
+                        }
+                        else
+                        {
+                            guestGoalsBeforeInInterval++;
+                        }
                     }
                 }
-            }
 
-            int goalsRemain = interval.To - goalsBefore.Length;
-            //Вероятности выигрышей (с закрытием интервала)
-            double hostsWinProb = 0;
-            double guestsWinProb = 0;
-            //Вероятность ничьей с закрытием интервала
-            double drawProb = 0;
-           
-            var notFinishedProb = 0d;
-            if (goalsRemain > 0)
-            {
-                
-                var l1 = meanHost * minutesTillEnd;
-                var l2 = meanGuest * minutesTillEnd;
-                notFinishedProb = CDFPoisson(goalsRemain - 1, l1 + l2);
-                var ps = l1 + l2;
-                var pHost = l1 / ps;
-                var pGuest = l2 / ps;
-                var finishedProb = 1 - notFinishedProb;
-                
-                for (int hostGoals = 0; hostGoals <= goalsRemain; hostGoals++)
+                int goalsRemain = input.GoalsRemain;
+                //Вероятности выигрышей (с закрытием интервала)
+                double hostsWinProb = 0;
+                double guestsWinProb = 0;
+                //Вероятность ничьей с закрытием интервала
+                double drawProb = 0;
+
+                var notFinishedProb = 0d;
+                if (goalsRemain > 0)
                 {
-                    var p = ProbBinom(goalsRemain, hostGoals, pHost);
-                    var guestGoals = goalsRemain - hostGoals;
-                    var totalHostGoals = hostGoals + hostsGoalsBeforeInInterval;
-                    var totalGuestGoals = guestGoals + guestGoalsBeforeInInterval;
-                    if (totalHostGoals > totalGuestGoals)
+
+                    var l1 = meanHost * minutesTillEnd;
+                    var l2 = meanGuest * minutesTillEnd;
+                    //Вероятность того, что интервал не будет завершен, по функции распределения распределения Пуассона
+                    notFinishedProb = CDFPoisson(goalsRemain - 1, l1 + l2);
+                    var ps = l1 + l2;
+                    var pHost = l1 / ps;
+                    var pGuest = l2 / ps;
+                    var finishedProb = 1 - notFinishedProb;
+
+                    for (int hostGoals = 0; hostGoals <= goalsRemain; hostGoals++)
                     {
-                        hostsWinProb += p;
-                    }
-                    else if (totalGuestGoals > totalHostGoals)
-                    {
-                        guestsWinProb += p;
-                    }
-                    else
-                    {
-                        drawProb += p;
+                        var p = ProbBinom(goalsRemain, hostGoals, pHost);
+                        var guestGoals = goalsRemain - hostGoals;
+                        var totalHostGoals = hostGoals + hostsGoalsBeforeInInterval;
+                        var totalGuestGoals = guestGoals + guestGoalsBeforeInInterval;
+                        if (totalHostGoals > totalGuestGoals)
+                        {
+                            hostsWinProb += p;
+                        }
+                        else if (totalGuestGoals > totalHostGoals)
+                        {
+                            guestsWinProb += p;
+                        }
+                        else
+                        {
+                            drawProb += p;
+                        }
+
                     }
 
-                }
+                    hostsWinProb *= finishedProb;
+                    guestsWinProb *= finishedProb;
+                    drawProb *= finishedProb;
+                    //hostsWinProb = pHost * finishedProb;
+                    //guestsWinProb = pGuest * finishedProb;
 
-                hostsWinProb *= finishedProb;
-                guestsWinProb *= finishedProb;
-                drawProb *= finishedProb;
-                //hostsWinProb = pHost * finishedProb;
-                //guestsWinProb = pGuest * finishedProb;
-
-            }
-            else
-            {
-                //Если все голы 
-                if (guestGoalsBeforeInInterval == hostsGoalsBeforeInInterval)
-                {
-                    //Если кол-во голов одинаковое, то ничья
-                    guestsWinProb = 0;
-                    hostsWinProb = 0;
-                    drawProb = 1;
-                }
-                else if(guestGoalsBeforeInInterval > hostsGoalsBeforeInInterval)
-                {
-                    //Выиграли гости
-                    guestsWinProb = 1;
-                    hostsWinProb = 0;
-                    drawProb = 0;
                 }
                 else
                 {
-                    //Выиграли хозяева
-                    guestsWinProb = 0;
-                    hostsWinProb = 1;
-                    drawProb = 0;
+                    //Если все голы 
+                    if (guestGoalsBeforeInInterval == hostsGoalsBeforeInInterval)
+                    {
+                        //Если кол-во голов одинаковое, то ничья
+                        guestsWinProb = 0;
+                        hostsWinProb = 0;
+                        drawProb = 1;
+                    }
+                    else if (guestGoalsBeforeInInterval > hostsGoalsBeforeInInterval)
+                    {
+                        //Выиграли гости
+                        guestsWinProb = 1;
+                        hostsWinProb = 0;
+                        drawProb = 0;
+                    }
+                    else
+                    {
+                        //Выиграли хозяева
+                        guestsWinProb = 0;
+                        hostsWinProb = 1;
+                        drawProb = 0;
+                    }
                 }
-            }
-            return new ResultProbs(hostsWinProb, guestsWinProb, drawProb, notFinishedProb);
+
+                return new ResultProbs(hostsWinProb, guestsWinProb, drawProb, notFinishedProb);
+            });
+            return probsResult;
         }
     }
 }

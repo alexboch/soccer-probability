@@ -140,17 +140,18 @@ namespace SoccerProbability
 
         private const int MaxMonteCarlo = 1000000;
 
-        public void Calculate()
+        public async void Calculate()
         {
             var data = StatsData.MatchStats;
             var (meanGuest,meanHost) = ComputeStats.ComputeMeans(data);
             var inputData = new InputData(MinutesTillEnd, Goals, Interval, meanGuest, meanHost);
-            var result = ProbModel.ComputeProbs(inputData);
+            var result = await ProbModel.ComputeProbs(inputData);
             HostsWinProb = result.HostsWonProb;
             GuestsWinProb = result.GuestsWonProb;
             DrawProb = result.DrawProb;
             NotFinishedProb = result.NotFinishedProb;
-            var monteCarloResult = MonteCarlo.Generate(inputData, MaxMonteCarlo);
+
+            var monteCarloResult = await MonteCarlo.Generate(inputData, MaxMonteCarlo);
             HostsMonteCarloWinProb = monteCarloResult.HostsWonProb;
             GuestsMonteCarloWinProb = monteCarloResult.GuestsWonProb;
             DrawMonteCarloProb = monteCarloResult.DrawProb;

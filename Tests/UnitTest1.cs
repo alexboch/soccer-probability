@@ -68,7 +68,7 @@ namespace Tests
                     var drawProbExpected = 1 - hostsWonProbExpected - guestsWonProbExpected;
                     var inputData = new InputData(Constants.MinutesPerMatch, goalsList, interval, StatsData.MeanHostGoals,
                         StatsData.MeanGuestGoals);
-                    var probsResult = ProbModel.ComputeProbs(inputData);
+                    var probsResult = ProbModel.ComputeProbs(inputData).Result;
                     var guestsWonProb = probsResult.GuestsWonProb;
                     var hostsWonProb = probsResult.HostsWonProb;
                     var drawProb = probsResult.DrawProb;
