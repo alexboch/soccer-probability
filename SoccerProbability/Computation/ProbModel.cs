@@ -37,44 +37,16 @@ namespace SoccerProbability.Computation
         }
 
         /// <summary>
-        /// функция распредения биномиального распределения
+        /// Функция вероятности для биномиального распределения
         /// </summary>
-        /// <param name="y"></param>
-        /// <param name="n">Общее кол-во испытаний</param>
+        /// <param name="n"></param>
+        /// <param name="k"></param>
         /// <param name="p"></param>
         /// <returns></returns>
-        private static double CDFBinom(int y, int n, double p)
-        {
-            var sum = 0d;
-            var q = 1 - p;
-            for (int k = 0; k <= y; k++)
-            {
-                var s = C(n, k) * Math.Pow(p, k) * Math.Pow(q, n - k);
-                sum += s;
-            }
-
-            return sum;
-        }
-
         private static double ProbBinom(int n, int k, double p)
         {
             var q = 1 - p;
             return C(n, k) * Math.Pow(p, k) * Math.Pow(q, n - k);
-        }
-
-        /// <summary>
-        /// Вероятность, что событие наступит k раз, для простейшего потока событий
-        /// </summary>
-        /// <param name="k"></param>
-        /// <param name="meanByMinutes">Средняя интенсивность</param>
-        /// <param name="minutes">Кол-во минут, в течении которых может наступить k событий</param>
-        /// <returns>Кортеж, содержащий числитель и знаменатель</returns>
-        private static double ProbPoisson(int k, double l)
-        {
-            var exp = Math.Exp(-l);
-            var lPow = Math.Pow(l, k);
-            var f = Fact(k);
-            return lPow / f * exp;
         }
 
         /// <summary>
@@ -138,11 +110,10 @@ namespace SoccerProbability.Computation
 
                     var l1 = meanHost * minutesTillEnd;
                     var l2 = meanGuest * minutesTillEnd;
-                    //Вероятность того, что интервал не будет завершен, по функции распределения распределения Пуассона
+                    //Вероятность того, что интервал не будет завершен, по функции распределения распределения Пуассона для суммы потоков
                     notFinishedProb = CDFPoisson(goalsRemain - 1, l1 + l2);
                     var ps = l1 + l2;
                     var pHost = l1 / ps;
-                    var pGuest = l2 / ps;
                     var finishedProb = 1 - notFinishedProb;
 
                     for (int hostGoals = 0; hostGoals <= goalsRemain; hostGoals++)
@@ -169,8 +140,6 @@ namespace SoccerProbability.Computation
                     hostsWinProb *= finishedProb;
                     guestsWinProb *= finishedProb;
                     drawProb *= finishedProb;
-                    //hostsWinProb = pHost * finishedProb;
-                    //guestsWinProb = pGuest * finishedProb;
 
                 }
                 else
