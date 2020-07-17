@@ -131,6 +131,12 @@ namespace SoccerProbability.Computation
                 var l1 = meanHost * minutesTillEnd;
                 var l2 = meanGuest * minutesTillEnd;
                 notFinishedProb = CDFPoisson(goalsRemain - 1, l1 + l2);
+                var ps = l1 + l2;
+                var pHost = l1 / ps;
+                var pGuest = l2 / ps;
+                var finishedProb = 1 - notFinishedProb;
+                hostsWinProb = pHost * finishedProb;
+                guestsWinProb = pGuest * finishedProb;
 
             }
             else
