@@ -138,6 +138,8 @@ namespace SoccerProbability
             }
         }
 
+        private const int MaxMonteCarlo = 1000000;
+
         public void Calculate()
         {
             var data = StatsData.MatchStats;
@@ -148,7 +150,7 @@ namespace SoccerProbability
             GuestsWinProb = result.GuestsWonProb;
             DrawProb = result.DrawProb;
             NotFinishedProb = result.NotFinishedProb;
-            var monteCarloResult = MonteCarlo.Generate(inputData, 10000);
+            var monteCarloResult = MonteCarlo.Generate(inputData, MaxMonteCarlo);
             HostsMonteCarloWinProb = monteCarloResult.HostsWonProb;
             GuestsMonteCarloWinProb = monteCarloResult.GuestsWonProb;
             DrawMonteCarloProb = monteCarloResult.DrawProb;

@@ -56,6 +56,12 @@ namespace SoccerProbability.Computation
             return sum;
         }
 
+        private static double ProbBinom(int n, int k, double p)
+        {
+            var q = 1 - p;
+            return C(n, k) * Math.Pow(p, k) * Math.Pow(q, n - k);
+        }
+
         /// <summary>
         /// Вероятность, что событие наступит k раз, для простейшего потока событий
         /// </summary>
@@ -135,8 +141,32 @@ namespace SoccerProbability.Computation
                 var pHost = l1 / ps;
                 var pGuest = l2 / ps;
                 var finishedProb = 1 - notFinishedProb;
-                hostsWinProb = pHost * finishedProb;
-                guestsWinProb = pGuest * finishedProb;
+                
+                for (int hostGoals = 0; hostGoals <= goalsRemain; hostGoals++)
+                {
+                    var p = ProbBinom(goalsRemain, hostGoals, pHost);
+                    var guestGoals = goalsRemain - hostGoals;
+
+                    if (hostGoals > guestGoals)
+                    {
+                        hostsWinProb += p;
+                    }
+                    else if (guestGoals > hostGoals)
+                    {
+                        guestsWinProb += p;
+                    }
+                    else
+                    {
+                        drawProb += p;
+                    }
+
+                }
+
+                hostsWinProb *= finishedProb;
+                guestsWinProb *= finishedProb;
+                drawProb *= finishedProb;
+                //hostsWinProb = pHost * finishedProb;
+                //guestsWinProb = pGuest * finishedProb;
 
             }
             else

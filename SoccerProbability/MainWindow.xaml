@@ -80,7 +80,7 @@
             </GroupBox>
         </StackPanel>
         <StackPanel Grid.Column ="1">
-            <GroupBox Header="Результаты метода Монте-Карло">
+            <GroupBox VerticalAlignment="Bottom"  Header="Результаты метода Монте-Карло">
                 <StackPanel>
                     <TextBlock Text="Вероятность победы хозяев"></TextBlock>
                     <TextBlock Text="{Binding HostsMonteCarloWinProb}"></TextBlock>
