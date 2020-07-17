@@ -26,6 +26,37 @@ namespace SoccerProbability.Computation
         }
 
         /// <summary>
+        /// Биномиальный коэффициент
+        /// </summary>
+        /// <param name="n"></param>
+        /// <param name="k"></param>
+        /// <returns></returns>
+        private static double C(int n, int k)
+        {
+            return Fact(n) / (Fact(n - k) * Fact(k));
+        }
+
+        /// <summary>
+        /// функция распредения биномиального распределения
+        /// </summary>
+        /// <param name="y"></param>
+        /// <param name="n">Общее кол-во испытаний</param>
+        /// <param name="p"></param>
+        /// <returns></returns>
+        private static double CDFBinom(int y, int n, double p)
+        {
+            var sum = 0d;
+            var q = 1 - p;
+            for (int k = 0; k <= y; k++)
+            {
+                var s = C(n, k) * Math.Pow(p, k) * Math.Pow(q, n - k);
+                sum += s;
+            }
+
+            return sum;
+        }
+
+        /// <summary>
         /// Вероятность, что событие наступит k раз, для простейшего потока событий
         /// </summary>
         /// <param name="k"></param>
@@ -54,7 +85,6 @@ namespace SoccerProbability.Computation
 
             return Math.Exp(-l) * sum;
         }
-
 
 
         public static ResultProbs ComputeProbs(InputData input)
